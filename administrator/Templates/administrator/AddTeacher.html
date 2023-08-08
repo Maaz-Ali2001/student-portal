@@ -1,0 +1,177 @@
+{% extends 'administrator/baseAdmin.html' %}
+
+{% block title %}
+Add Teacher
+{% endblock %}
+
+{% block Teacher_active %} class="nav-link active" {% endblock %}
+
+{% block content %}
+<h1 style="text-align: center; ; margin: 50px 50px; background-color:darkgrey ;">Add Teacher</h1>
+<form class="row g-3" style="width: 80%  ;margin: 100px 10%; " action="{% url 'administrator:AddTeacher' %}"
+  method="post" enctype="multipart/form-data">
+  {% csrf_token %}
+  <div class="col-md-4">
+    <label for="inputName" class="form-label">Teacher Name</label>
+    <input type="email" name="name" class="form-control" id="inputName">
+  </div>
+
+  <div class="col-md-4">
+    <label for="inputEmail" class="form-label">Teacher ID</label>
+    <input type="email" name="teacherId" class="form-control" id="inputEmail">
+  </div>
+  <div class="col-md-4">
+    <label for="inputPassword" class="form-label">Password</label>
+    <input type="password" name="password" class="form-control" id="inputPassword">
+  </div>
+  <div class="col-md-4">
+    <label for="inputPhone" class="form-label">Phone no</label>
+    <input type="text" class="form-control" name="phoneNo" id="inputPhone" placeholder="03*******20">
+  </div>
+
+  <div class="col-md-8">
+    <label for="inputAddress" class="form-label">Address</label>
+    <input type="text" class="form-control" name="address" id="inputAddress"
+      placeholder="A321 , Johar, Block 10, Karachi">
+  </div>
+
+  <div class="row g-3">
+
+    <div class="col-md-4">
+      <label for="inputNoSubjects" class="form-label" >No of subjects teach</label>
+      <input type="text" class="form-control"  oninput="createTaughtItems()" id="inputNoSubjects" >
+    </div>
+  </div>
+
+  <div id="taugthConatainer">
+</div>
+
+
+  <div class="col-12">
+    <button type="submit" class="btn btn-primary">Add</button>
+  </div>
+</form>
+<script>
+
+
+  function generalUpdateOptions(event= 'none'){
+    if (event == 'none'){
+      console.log('founs')
+      const classSelectElements= document.getElementsByName('class');
+      for (const elem of classSelectElements){
+        console.log(elem.id)
+        updateOptions(elem.id);
+      }
+    }
+    else{
+      updateOptions(event.target.id);
+    }
+  }
+
+
+  function updateOptions(classId) {
+    var classCount= classId.slice(5); 
+    const js_createdElements = document.getElementsByClassName('optionsUpdated'+classCount);
+
+    for (let i = 0; i < js_createdElements.length; i++) {
+      js_createdElements[i].remove();
+      i--;
+    }
+    var classesDict = JSON.parse("{{ js_classes|escapejs }}");
+    const classSelect = document.getElementById(classId);
+    let count= classId.slice(5);
+    let subjectId=  'subject' + count;
+    let sectionId=  'section' + count;
+    const subjectSelect = document.getElementById(subjectId);
+    const sectionSelect = document.getElementById(sectionId);
+    const classSelected = classSelect.value;
+    const subjectsList = classesDict[classSelected]['subjects']
+    const sectionsList = classesDict[classSelected]['sections']
+
+    for (const sub of subjectsList) {
+      const subElement = document.createElement('option');
+      subElement.value = sub;
+      subElement.textContent = sub;
+      subElement.classList.add('optionsUpdated'+classCount);
+      subjectSelect.appendChild(subElement);
+    }
+
+    for (const sec of sectionsList) {
+      const secElement = document.createElement('option');
+      secElement.value = sec;
+      secElement.textContent = sec;
+      secElement.classList.add('optionsUpdated'+classCount);
+      sectionSelect.appendChild(secElement)
+    }
+
+
+  }
+
+  function createTaughtItems(){
+
+        var count= document.getElementById('inputNoSubjects').value;
+        var taughtItemElements= document.getElementsByClassName('taughtItem')
+        var count_elements= taughtItemElements.length;
+        const parentDiv=  document.getElementById('taugthConatainer');
+
+        if (count_elements<count){        
+
+
+        for (let i=count_elements+1;i<=count;i++){
+
+          const newTaughtItem= document.createElement('div');
+          newTaughtItem.classList.add('taughtItem','row','g-3');
+          var classId= 'class'+i
+          var subjectId= 'subject'+i
+          var sectionId= 'section'+i
+          var innerHtmlItem= '<div class="col-md-4">'+
+                '<label for="'+classId+'" class="form-label">Class</label>'+
+                '<select id="'+classId+'" name="class" class="form-select" onchange="generalUpdateOptions(event)">'+
+                '</select>'+
+              '</div>'+
+              '<div class="col-md-4">'+
+                '<label for="'+sectionId+'" class="form-label">Section</label>'+
+                '<select id="'+sectionId+'" name="section" class="form-select">'+
+                '</select>'+
+              '</div>'+
+              '<div class="col-md-4">'+
+                '<label for="'+subjectId+'" class="form-label">Subject</label>'+
+                '<select id="'+subjectId+'" name="subject" class="form-select">'+
+                '</select>'+
+              '</div>'
+
+          newTaughtItem.innerHTML= innerHtmlItem;
+          parentDiv.appendChild(newTaughtItem)
+          
+        }
+      }
+      else{
+        for (let i= count_elements-1;i>=count;i--){
+          taughtItemElements[i].remove();
+        }
+      }
+      createClassesOptions();
+
+  }
+
+  function createClassesOptions(){
+    const classSelectElements= document.getElementsByName('class');
+    var classesDict = JSON.parse("{{ js_classes|escapejs }}");
+
+    for (const classSelectElem of classSelectElements){
+  
+    for (const className in classesDict) {
+      const subElement = document.createElement('option');
+      subElement.value = className;
+      subElement.textContent = className;
+      classSelectElem.appendChild(subElement);
+    }
+
+  }
+  
+    generalUpdateOptions();
+}
+
+</script>
+
+{% endblock %}

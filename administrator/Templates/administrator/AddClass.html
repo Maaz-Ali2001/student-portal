@@ -1,0 +1,118 @@
+
+
+  {% extends 'administrator/baseAdmin.html' %}
+
+  {% block title %}
+  Addd Class
+{% endblock %}
+
+{% block Class_active %} class="nav-link active" {% endblock %} 
+
+{% block content %}
+<h1 style="text-align: center; ; margin: 50px 50px; background-color:darkgrey ;">Add Class</h1> 
+
+<form class="row g-3 ms-auto mx-auto form_class" id="create_form" style="width: 50%  ; margin: 100px 100px;"
+            action="{% url 'administrator:AddClass' %}" method="post" enctype="multipart/form-data">
+  {% csrf_token %}
+    <div class="col-12">
+      <label for="ClassName" class="form-label">Class Name</label>
+      <input type="text" class="form-control" name="ClassName" id="ClassName">
+    </div>
+    <div class="col-6">
+      <label for="SectionsCount" class="form-label">No of sections</label>
+      <input type="number" class="form-control" name="SectionsCount" id="SectionsCount" oninput="insertSectionDivs()">
+    </div>
+    <div class="col-6">
+      <label for="SubjectsCount" class="form-label">No of subjects</label>
+      <input type="number" class="form-control" name="SubjectsCount" id="SubjectsCount" oninput="insertSubjectDivs()">
+    </div>
+    <div class="col-12" id="submit">
+      <button type="submit" class="btn btn-primary">Add</button>
+    </div>
+  </form>
+
+  <script>
+    function insertSectionDivs(divType) {
+        var count= document.getElementById('SectionsCount').value;
+        var count_elements= document.getElementsByClassName('js_section').length
+        if (count_elements<count){        
+
+
+        for (let i=count_elements+1;i<=count;i++){
+
+          const divElement = document.createElement('div');
+          divElement.classList.add('col-md-6');
+          divElement.classList.add('js_section');
+          name= 'Section'+i
+          const labelElement = document.createElement('label');
+          labelElement.setAttribute('for', name);
+          labelElement.className = 'form-label';
+          labelElement.textContent = 'Section '+i;
+          labelElement.style.color= 'darkred';
+          labelElement.style.fontWeight= 'bold';
+          const inputElement = document.createElement('input');
+          inputElement.setAttribute('type', 'text');
+          inputElement.className = 'form-control';
+          inputElement.id = name;
+          inputElement.name= 'Section'
+          divElement.appendChild(labelElement);
+          divElement.appendChild(inputElement);
+          const parentElement = document.getElementById('create_form');
+          const submit_button = document.getElementById('submit');
+          parentElement.insertBefore(divElement, submit_button);
+
+        }
+      }
+      else{
+        const js_elements= document.getElementsByClassName('js_section');
+        for (let i= count_elements-1;i>=count;i--){
+          js_elements[i].remove();
+        }
+      }
+      }
+
+
+
+
+function insertSubjectDivs(divType) {
+        var count= document.getElementById('SubjectsCount').value;
+        var count_elements= document.getElementsByClassName('js_subject').length
+        if (count_elements<count){        
+
+
+        for (let i=count_elements+1;i<=count;i++){
+
+          const divElement = document.createElement('div');
+          divElement.classList.add('col-md-6');
+          divElement.classList.add('js_subject');
+          name= 'Subject'+i
+          const labelElement = document.createElement('label');
+          labelElement.setAttribute('for', name);
+          labelElement.className = 'form-label';
+          labelElement.textContent = 'Subject '+i;
+          labelElement.style.color= 'darkblue';
+          labelElement.style.fontWeight= 'bold';
+          const inputElement = document.createElement('input');
+          inputElement.setAttribute('type', 'text');
+          inputElement.className = 'form-control';
+          inputElement.id = name;
+          inputElement.name= 'Subject'
+          divElement.appendChild(labelElement);
+          divElement.appendChild(inputElement);
+          const parentElement = document.getElementById('create_form');
+          const submit_button = document.getElementById('submit');
+          parentElement.insertBefore(divElement, submit_button);
+
+        }
+      }
+      else{
+        const js_elements= document.getElementsByClassName('js_subject');
+        for (let i= count_elements-1;i>=count;i--){
+          js_elements[i].remove();
+        }
+      }
+      }
+
+  </script>
+
+{% endblock %}
