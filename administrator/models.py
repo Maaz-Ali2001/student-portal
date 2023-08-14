@@ -20,5 +20,5 @@ class Teacher(models.Model):
         return self.name
     
 class Teacher_Class(models.Model):
-    teacher_id=  models.ForeignKey(Teacher, on_delete=models.CASCADE)
-    class_id=  models.ForeignKey(Class, on_delete=models.CASCADE)
+    teacher=  models.ForeignKey(Teacher, on_delete=models.CASCADE)
+    Class=  models.ForeignKey(Class, on_delete=models.CASCADE)
