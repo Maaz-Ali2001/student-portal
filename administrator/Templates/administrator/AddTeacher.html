@@ -13,20 +13,20 @@ Add Teacher
   {% csrf_token %}
   <div class="col-md-4">
     <label for="inputName" class="form-label">Teacher Name</label>
-    <input type="email" name="name" class="form-control" id="inputName">
+    <input type="text" name="name" class="form-control" id="inputName" required>
   </div>
 
   <div class="col-md-4">
     <label for="inputEmail" class="form-label">Teacher ID</label>
-    <input type="email" name="teacherId" class="form-control" id="inputEmail">
+    <input type="text" name="teacherId" class="form-control" id="inputEmail" required>
   </div>
   <div class="col-md-4">
     <label for="inputPassword" class="form-label">Password</label>
-    <input type="password" name="password" class="form-control" id="inputPassword">
+    <input type="password" name="password" class="form-control" id="inputPassword" required>
   </div>
   <div class="col-md-4">
     <label for="inputPhone" class="form-label">Phone no</label>
-    <input type="text" class="form-control" name="phoneNo" id="inputPhone" placeholder="03*******20">
+    <input type="text" class="form-control" name="phoneNo" id="inputPhone" placeholder="03*******20" required>
   </div>
 
   <div class="col-md-8">
@@ -39,7 +39,9 @@ Add Teacher
 
     <div class="col-md-4">
       <label for="inputNoSubjects" class="form-label" >No of subjects teach</label>
-      <input type="text" class="form-control"  oninput="createTaughtItems()" id="inputNoSubjects" >
+      <input type="number" class="form-control"  onchange="createTaughtItems()" id="inputNoSubjects" >
+      <br>
+      <button type="button" class="btn btn-outline-secondary btn-sm">Ok</button>
     </div>
   </div>
 
@@ -56,7 +58,6 @@ Add Teacher
 
   function generalUpdateOptions(event= 'none'){
     if (event == 'none'){
-      console.log('founs')
       const classSelectElements= document.getElementsByName('class');
       for (const elem of classSelectElements){
         console.log(elem.id)

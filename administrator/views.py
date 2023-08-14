@@ -1,11 +1,13 @@
 from django.shortcuts import render,HttpResponse, redirect
 from .forms import MyCustomForm,TeacherForm
-from .models import Class,Teacher
+from .models import Class,Teacher,Teacher_Class
 from django.db.models import Count
 import json
 
 def Teachers(request):
-    return render(request,'administrator/Teachers.html')
+    unique_teachers = Teacher.objects.values('teacher_id', 'name').distinct()
+    print(unique_teachers)
+    return render(request,'administrator/Teachers.html',{'teachers':unique_teachers})
 
 def Students(request):
     return render(request,'administrator/Students.html')
@@ -27,19 +29,22 @@ def Classes(request):
 def AddTeacher(request):
     if request.method == 'POST':
         name= request.POST.get('name')
-        class_name= request.POST.get('class')
-        subject= request.POST.get('subject')
-        section= request.POST.get('section')
+        class_name= request.POST.getlist('class')
+        subject= request.POST.getlist('subject')
+        section= request.POST.getlist('section')
         teacher_id= request.POST.get('teacherId')
         password= request.POST.get('password')
         phone_no= request.POST.get('phoneNo')
         address= request.POST.get('address')   
 
-        class_instance = Class.objects.get(name=class_name, subject=subject, section=section)
-        classId = class_instance.id
-        newClass= Teacher(name=name,teacher_id=teacher_id,password=password,phone_no=phone_no,address=address,class_taught=classId)
-        newClass.save()
+        newTeacher= Teacher(name=name,teacher_id=teacher_id,password=password,phone_no=phone_no,address=address)
+        newTeacher.save()
 
+        for index in range(0,len(subject)):
+
+            class_instance = Class.objects.get(name=class_name[index], subject=subject[index], section=section[index])
+            teacher_class_table= Teacher_Class(teacher_id= newTeacher, class_id= class_instance)
+            teacher_class_table.save()
 
         return redirect('administrator:Teachers')
 
