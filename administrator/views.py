@@ -5,7 +5,7 @@ from django.db.models import Count
 import json
 
 def Teachers(request):
-    unique_teachers = Teacher.objects.values('teacher_id', 'name').distinct()
+    unique_teachers = Teacher.objects.values('id','teacher_id', 'name')
     print(unique_teachers)
     return render(request,'administrator/Teachers.html',{'teachers':unique_teachers})
 
@@ -26,7 +26,7 @@ def Classes(request):
     return render(request,'administrator/Classes.html',{'classes':class_info})
 
 
-def AddTeacher(request):
+def AddTeacher(request,teacher_id=None):
     if request.method == 'POST':
         name= request.POST.get('name')
         class_name= request.POST.getlist('class')
@@ -66,6 +66,18 @@ def AddTeacher(request):
 
     js_classes= json.dumps(class_info_dict)
     print(class_info_dict)
+
+    if teacher_id!=None:
+        classes_lst= []
+        teacher = Teacher.objects.get(id=teacher_id) 
+        classes = Teacher_Class.objects.filter(teacher_id=teacher.id)
+        for c in classes:
+            classes_detail = Class.objects.filter(id= c.id).values()
+            classes_lst.append(classes_detail[0])
+        print(classes_lst)
+        js_classes_lst= json.dumps(classes_lst)
+        return render(request, 'administrator/AddTeacher.html',{'classes':class_info_dict,'js_classes':js_classes,'js_classes_update':js_classes_lst})
+    
     return render(request, 'administrator/AddTeacher.html',{'classes':class_info_dict,'js_classes':js_classes})
 
 def AddClass(request):

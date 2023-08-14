@@ -20,11 +20,13 @@
     </div>
     <div class="col-6">
       <label for="SectionsCount" class="form-label">No of sections</label>
-      <input type="number" class="form-control" name="SectionsCount" id="SectionsCount" oninput="insertSectionDivs()">
+      <input type="number" class="form-control" name="SectionsCount" id="SectionsCount" onchange="insertSectionDivs()">
+      <button type="button" style="margin-top:10px;" class="btn btn-outline-secondary btn-sm">Ok</button>
     </div>
     <div class="col-6">
       <label for="SubjectsCount" class="form-label">No of subjects</label>
-      <input type="number" class="form-control" name="SubjectsCount" id="SubjectsCount" oninput="insertSubjectDivs()">
+      <input type="number" class="form-control" name="SubjectsCount" id="SubjectsCount" onchange="insertSubjectDivs()">
+      <button type="button" style="margin-top:10px;" class="btn btn-outline-secondary btn-sm">Ok</button>
     </div>
     <div class="col-12" id="submit">
       <button type="submit" class="btn btn-primary">Add</button>

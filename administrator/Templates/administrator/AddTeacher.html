@@ -173,6 +173,15 @@ Add Teacher
     generalUpdateOptions();
 }
 
+var getList = "{{ js_classes_update|escapejs }}";
+if (getList!=null){
+  console.log('helloooooo')
+  var classesUpdate= JSON.parse(getList);
+  console.log(classesUpdate)
+  var dictLength = Object.keys(classesUpdate).length;
+}
+
+
 </script>
 
 {% endblock %}
