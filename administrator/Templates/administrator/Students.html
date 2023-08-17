@@ -9,32 +9,55 @@
 {% block content %}
 <h1 style="text-align: center; ; margin: 50px 50px;">Students</h1> 
 
-
-<table class="table ms-auto mx-auto" style="width: 70%  ; margin-top: 100px;">
-  <button type="button" class="btn btn-primary btn-lg" style="margin-left:15% ;">Add Student</button>
+<button type="button" class="btn btn-primary btn-lg" style="margin-left:6% ;"><a href="{% url 'administrator:AddStudent' %}" class="text-white text-decoration-none">Add Student</a></button>
+<div class="container-fluid pt-3" style="width: 90%;">
+<table class="table table-bordered ms-auto mx-auto" style="" id="students">
+ <thead>
     <tr>
-      <th scope="col">First</th>
-      <th scope="col">Last</th>
-      <th scope="col">Handle</th>
+      <th >Id</th>
+      <th >Name</th>
+      <th >Email</th>
+      <th >Gradian/Parent</th>
+      <th >Gender</th>
+      <th >Enrollment Date</th>
+      <th>Class</th>
+      <th >Section</th>
     </tr>
   </thead>
   <tbody>
+    {% for student in students %}
     <tr>
-      <td>Mark</td>
-      <td>Otto</td>
-      <td>@mdo</td>
+      <td>{{ student.id }}</td>
+      <td>{{ student.name }}</td>
+      <td>{{ student.email_address }}</td>
+      <td>{{ student.gardian_or_parent_name }}</td>
+      <td>{{ student.gender }}</td>
+      <td>{{ student.date_of_enrollment }}</td>
+      <td>{{ student.class }}</td>
+      <td>{{ student.section }}</td>
     </tr>
-    <tr>
-      <td>Jacob</td>
-      <td>Thornton</td>
-      <td>@fat</td>
-    </tr>
-    <tr>
-      <td>Larry the Bird</td>
-      <td>Thornton</td>
-      <td>@twitter</td>
-    </tr>
+    {% endfor %}
   </tbody>
 </table>
+</div>
 
+{% endblock %}
+
+{% block script %}
+<script>
+  $("#students").DataTable({
+    paging : true,
+    pageLength : 10,
+    lengthChange : true,
+    autoWidth : true,
+    searching : true,
+    bInfo : true,
+    bSort : true,
+
+    "columnDefs" : [{
+      "targets" : 4,
+      "orderable" : false
+    }]
+    })
+</script>
 {% endblock %}

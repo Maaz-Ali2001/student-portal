@@ -1,0 +1,114 @@
+{% extends 'administrator/baseAdmin.html' %}
+
+{% block title %}
+Add Student
+{% endblock %}
+
+{% block Teacher_active %} class="nav-link active" {% endblock %}
+
+{% block content %}
+<h1 style="text-align: center; ; margin: 50px 50px; background-color:darkgrey ;">Add Student</h1>
+<form class="row g-3" style="width: 80%  ;margin: 100px 10%; " action="{% url 'administrator:AddStudent' %}"
+  method="post" enctype="multipart/form-data">
+  {% csrf_token %}
+  <div class="col-md-4">
+    <label for="inputName" class="form-label">Student Name</label>
+    <input type="text" name="name" class="form-control" id="inputName" required>
+  </div>
+
+  <div class="col-md-4">
+    <label for="inputEmail" class="form-label">Email Address</label>
+    <input type="text" name="studemail" class="form-control" id="inputEmail" required>
+  </div>
+  <div class="col-md-4">
+    <label for="phone" class="form-label">Phone Number</label>
+    <input type="tel" class="form-control" id="phone" name="phone_no" placeholder="03*******20" required>
+  </div>
+  <div class="col-md-4">
+    <label for="address" class="form-label">Address</label>
+                <textarea class="form-control" id="address" name="address" rows="3" required></textarea>
+  </div>
+
+  <div class="col-md-8">
+    <label for="guardian" class="form-label">Guardian or Parent Name</label>
+    <input type="text" class="form-control" id="guardian" name="gardian_or_parent_name" required>
+  </div>
+
+  <div class="row g-3">
+
+    <div class="col-md-4">
+        <label for="gender" class="form-label">Gender</label>
+    <select class="form-select" id="gender" name="gender" required>
+        <option value="Male">Male</option>
+        <option value="Female">Female</option>
+        <option value="Other">Other</option>
+    </select>
+        <label for="dob" class="form-label">Date of Birth</label>
+                <input type="date" class="form-control" id="dob" name="date_of_birth" required>
+                <label for="enrollment" class="form-label">Date of Enrollment</label>
+                <input type="date" class="form-control" id="enrollment" name="date_of_enrollment" required>
+                <label for="classSelect" class="form-label">Select Class</label>
+                <select class="form-select" id="classSelect" name="class" required>
+                    <option value="">Select a class</option>
+                    {% for class in onl_classes %}
+                    <option value="{{class}}">{{class}}</option>
+                    {% endfor %}
+                    <!-- Add other class options here -->
+                </select>
+                <label for="sectionSelect" class="form-label">Select Section</label>
+            <select class="form-select" id="sectionSelect" name="section" required disabled>
+                <option value="">Select a section</option>
+            </select>
+            </div>
+            
+    </div>
+  </div>
+
+
+  <div class="col-12">
+    <button type="submit" class="btn btn-primary">Add</button>
+  </div>
+</form>
+
+
+
+<script>
+    const classSelect = document.getElementById('classSelect');
+    const sectionSelect = document.getElementById('sectionSelect');
+    const sectionsByClass = JSON.parse('{{ classes|safe }}');
+    
+
+
+    // const sectionsByClass = {
+    //     '1st year engineering': ['A', 'B'],
+    //     '2nd year engineering': ['A', 'B', 'C'],
+    //     // Add other class-section mappings here
+    // };
+
+    classSelect.addEventListener('change', () => {
+        const selectedClass = classSelect.value;
+        const sections = sectionsByClass[String(selectedClass)];
+
+        // Clear previous options
+        sectionSelect.innerHTML = '<option value="">Select a section</option>';
+
+        if (sections) {
+            // Enable section dropdown
+            sectionSelect.disabled = false;
+
+            // Populate sections
+            sections.forEach(section => {
+                const option = document.createElement('option');
+                option.value = section;
+                option.textContent = section;
+                sectionSelect.appendChild(option);
+            });
+        } else {
+            // Disable section dropdown if no sections available
+            sectionSelect.disabled = true;
+        }
+    });
+</script>
+
+
+{% endblock %}

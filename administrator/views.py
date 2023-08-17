@@ -1,6 +1,6 @@
 from django.shortcuts import render,HttpResponse, redirect
 from .forms import MyCustomForm,TeacherForm
-from .models import Class,Teacher,Teacher_Class
+from .models import Class,Teacher,Teacher_Class,Student,Student_Class
 from django.db.models import Count
 import json
 
@@ -10,7 +10,16 @@ def Teachers(request):
     return render(request,'administrator/Teachers.html',{'teachers':unique_teachers})
 
 def Students(request):
-    return render(request,'administrator/Students.html')
+    students = Student.objects.all().values()
+    context = []
+    for i in students:
+        clas = Student_Class.objects.filter(student_id = i['id']).values()
+        sec = Class.objects.filter(id = clas[0]['class_id_id']).values()
+        i['class'] = sec[0]["name"]
+        i['section'] = sec[0]['section']
+        context.append(i)
+    print(context)
+    return render(request,'administrator/Students.html',{'students':context})
 
 
 def Classes(request):
@@ -95,4 +104,39 @@ def AddClass(request):
     
     #all_classes= Class.objects.all()
     return render(request, 'administrator/AddClass.html')
+
+def AddStudent(request):
+
+    if request.method == 'POST':
+        name = request.POST.get('name')
+        email = request.POST.get('studemail')
+        phone = request.POST.get('phone_no')
+        addr = request.POST.get('address')
+        gard_or_par = request.POST.get('gardian_or_parent_name')
+        gender = request.POST.get('gender')
+        dob = request.POST.get('date_of_birth')
+        enroll_date = request.POST.get('date_of_enrollment')
+        clas = request.POST.get('class')
+        section = request.POST.get('section')
+        student = Student(
+            name = name,email_address = email,phone_no = phone,
+            address = addr,gardian_or_parent_name = gard_or_par,
+            gender = gender, date_of_birth = dob, 
+            date_of_enrollment = enroll_date
+            )
+        student.save()
+        classes = Class.objects.filter(name = clas,section = section)
+        for i in classes:
+            stud_class = Student_Class(class_id = i,student_id = student)
+            stud_class.save()
+        return redirect('administrator:Students')
+    cls = Class.objects.values('name','section').distinct()
+    cls_dict = {}
+    for i in cls :
+        if i['name'] not in cls_dict.keys() and i['name']!='':
+            cls_dict[i['name']] = [i['section']]
+        elif i['name'] in cls_dict.keys():
+            cls_dict[i["name"]].append(i['section'])
+    print(cls_dict)
+    return render(request,"administrator/AddStudent.html",{'classes':json.dumps(cls_dict),'onl_classes':cls_dict.keys()})
 
