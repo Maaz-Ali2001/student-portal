@@ -35,7 +35,7 @@ def Classes(request):
     return render(request,'administrator/Classes.html',{'classes':class_info})
 
 
-def AddTeacher(request,teacher_id_att=None):
+def AddTeacher(request,teacher_id=None):
     if request.method == 'POST':
         name= request.POST.get('name')
         class_name= request.POST.getlist('class')
@@ -46,30 +46,13 @@ def AddTeacher(request,teacher_id_att=None):
         phone_no= request.POST.get('phoneNo')
         address= request.POST.get('address')   
 
-        if teacher_id_att!=None:
-            try:
-                teacher = Teacher.objects.get(id=teacher_id_att)
-                teacher.name = name
-                teacher.teacher_id=teacher_id
-                teacher.password=password
-                teacher.address=address
-                teacher.save()
-
-                classes= Teacher_Class.objects.filter(teacher_id= teacher_id_att).delete()
-
-
-            except Teacher.DoesNotExist:
-                pass
-
-        else:
-
-            teacher= Teacher(name=name,teacher_id=teacher_id,password=password,phone_no=phone_no,address=address)
-            teacher.save()
+        newTeacher= Teacher(name=name,teacher_id=teacher_id,password=password,phone_no=phone_no,address=address)
+        newTeacher.save()
 
         for index in range(0,len(subject)):
 
             class_instance = Class.objects.get(name=class_name[index], subject=subject[index], section=section[index])
-            teacher_class_table= Teacher_Class(teacher_id= teacher.id, Class_id= class_instance.id)
+            teacher_class_table= Teacher_Class(teacher_id= newTeacher, class_id= class_instance)
             teacher_class_table.save()
 
         return redirect('administrator:Teachers')
@@ -93,18 +76,16 @@ def AddTeacher(request,teacher_id_att=None):
     js_classes= json.dumps(class_info_dict)
     print(class_info_dict)
 
-    if teacher_id_att!=None:
+    if teacher_id!=None:
         classes_lst= []
-        teacher = Teacher.objects.filter(id=teacher_id_att).values()
-        teacher= teacher[0]
-        classes = Teacher_Class.objects.filter(teacher_id=teacher['id'])
+        teacher = Teacher.objects.get(id=teacher_id) 
+        classes = Teacher_Class.objects.filter(teacher_id=teacher.id)
         for c in classes:
-            classes_detail = Class.objects.filter(id= c.Class_id).values()
-            print(classes_detail)
+            classes_detail = Class.objects.filter(id= c.id).values()
             classes_lst.append(classes_detail[0])
+        print(classes_lst)
         js_classes_lst= json.dumps(classes_lst)
-        teacher= json.dumps(teacher)
-        return render(request, 'administrator/AddTeacher.html',{'classes':class_info_dict,'js_classes':js_classes,'js_classes_update':js_classes_lst,'js_teacher_info':teacher,'type':'update','teacherId':teacher_id_att})
+        return render(request, 'administrator/AddTeacher.html',{'classes':class_info_dict,'js_classes':js_classes,'js_classes_update':js_classes_lst})
     
     return render(request, 'administrator/AddTeacher.html',{'classes':class_info_dict,'js_classes':js_classes})
 

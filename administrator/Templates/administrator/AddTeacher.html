@@ -8,13 +8,8 @@ Add Teacher
 
 {% block content %}
 <h1 style="text-align: center; ; margin: 50px 50px; background-color:darkgrey ;">Add Teacher</h1>
-{% if type == "update" %}
-<form class="row g-3" style="width: 80%  ;margin: 100px 10%; " action="{% url 'administrator:UpdateTeacher' teacherId %}"
-  method="post" >
-{% else %}
 <form class="row g-3" style="width: 80%  ;margin: 100px 10%; " action="{% url 'administrator:AddTeacher' %}"
-  method="post" >
-  {% endif %}
+  method="post" enctype="multipart/form-data">
   {% csrf_token %}
   <div class="col-md-4">
     <label for="inputName" class="form-label">Teacher Name</label>
@@ -46,7 +41,7 @@ Add Teacher
       <label for="inputNoSubjects" class="form-label" >No of subjects teach</label>
       <input type="number" class="form-control"  onchange="createTaughtItems()" id="inputNoSubjects" >
       <br>
-      <button type="button" id="ok" class="btn btn-outline-secondary btn-sm">Ok</button>
+      <button type="button" class="btn btn-outline-secondary btn-sm">Ok</button>
     </div>
   </div>
 
@@ -65,6 +60,7 @@ Add Teacher
     if (event == 'none'){
       const classSelectElements= document.getElementsByName('class');
       for (const elem of classSelectElements){
+        console.log(elem.id)
         updateOptions(elem.id);
       }
     }
@@ -147,7 +143,6 @@ Add Teacher
 
           newTaughtItem.innerHTML= innerHtmlItem;
           parentDiv.appendChild(newTaughtItem)
-          createClassesOptions(classId);
           
         }
       }
@@ -156,85 +151,35 @@ Add Teacher
           taughtItemElements[i].remove();
         }
       }
-
+      createClassesOptions();
 
   }
 
-  function createClassesOptions(class_id){
-    const classSelectElem= document.getElementById(class_id);
+  function createClassesOptions(){
+    const classSelectElements= document.getElementsByName('class');
     var classesDict = JSON.parse("{{ js_classes|escapejs }}");
-    console.log('in')
+
+    for (const classSelectElem of classSelectElements){
   
     for (const className in classesDict) {
       const subElement = document.createElement('option');
       subElement.value = className;
       subElement.textContent = className;
       classSelectElem.appendChild(subElement);
-      updateOptions(classSelectElem.id);
     }
 
+  }
   
-  
-
+    generalUpdateOptions();
 }
 
-
-
 var getList = "{{ js_classes_update|escapejs }}";
-var getTeacherInfo = "{{ js_teacher_info|escapejs }}";
 if (getList!=null){
+  console.log('helloooooo')
   var classesUpdate= JSON.parse(getList);
-  var teacherInfo= JSON.parse(getTeacherInfo);
-  console.log(teacherInfo)
+  console.log(classesUpdate)
   var dictLength = Object.keys(classesUpdate).length;
-  const noSubjects=  document.getElementById('inputNoSubjects')
-  noSubjects.value=Number(dictLength);
-  var event = new Event("change");
-  noSubjects.dispatchEvent(event);
-
-  document.getElementsByName('name')[0].value=teacherInfo['name']
-  document.getElementsByName('teacherId')[0].value=teacherInfo['teacher_id']
-  document.getElementsByName('password')[0].value=teacherInfo['password']
-  document.getElementsByName('phoneNo')[0].value=teacherInfo['phone_no']
-  document.getElementsByName('address')[0].value=teacherInfo['address']
-
-
-
-  
-  var index= 1;
-  for (const c of classesUpdate){
-    console.log(c)
-    const classSelect= document.getElementById('class'+index);
-    const subjectSelect= document.getElementById('subject'+index);  
-    const sectionSelect= document.getElementById('section'+index);
-
-    for (let i = 0; i < classSelect.options.length; i++){
-      if (classSelect.options[i].value === c['name']) {
-        classSelect.options[i].selected = true;
-        var confirmEvent = new Event("change");
-        classSelect.dispatchEvent(event);
-        break;
-    }
-  }
-    for (let i = 0; i < sectionSelect.options.length; i++){
-      if (sectionSelect.options[i].value === c['section']) {
-        sectionSelect.options[i].selected = true;
-        break;
-    }
-  }
-    for (let i = 0; i < subjectSelect.options.length; i++){
-      if (subjectSelect.options[i].value === c['subject']) {
-        subjectSelect.options[i].selected = true;
-        break;
-    }
-    }
-
-    index++;
-  }
-  
-  }
-
-
+}
 
 
 </script>

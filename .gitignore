@@ -2,3 +2,4 @@ venv/
 .idea/
 studentportal/administrator/__pycache__/
 studentportal/administrator/migrations/__pycache__/
+db.sqlite3
