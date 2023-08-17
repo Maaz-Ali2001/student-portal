@@ -12,5 +12,6 @@ urlpatterns = [
     path("AddClass/", views.AddClass, name="AddClass"),
     path("UpdateTeacher/<str:teacher_id>/", views.AddTeacher, name="UpdateTeacher"),
     path("AddStudent/", views.AddStudent, name="AddStudent")
+    path("UpdateTeacher/<str:teacher_id_att>/", views.AddTeacher, name="UpdateTeacher"),
 
 ]
