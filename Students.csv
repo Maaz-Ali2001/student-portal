@@ -1,0 +1,5 @@
+﻿name,email,phone_no,address,gardian_or_parent,gender,date_of_birth,date_of_enrollment,class,section
+Saboor,saboor@gmail.com,3192734832,"Malir,Quadabad",Alvi,Male,18/09/2001,18/08/2023,1st year engineering,A
+Faaiz,faaiz@gmail.com,9123456712,"North,Nazimabad",Azeem,Male,19/11/2001,19/08/2023,2nd year engineering,B
+Taha,taha@gmail.com,9123459812,Gulshan,Shareef,Male,20/09/2001,20/08/2023,2nd year engineering,A
+Asghar,asghar@gmail.com,9123459812,Saddar,Chandio,Male,21/09/2001,21/08/2023,2nd year engineering,C

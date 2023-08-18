@@ -8,67 +8,174 @@ Add Student
 
 {% block content %}
 <h1 style="text-align: center; ; margin: 50px 50px; background-color:darkgrey ;">Add Student</h1>
-<form class="row g-3" style="width: 80%  ;margin: 100px 10%; " action="{% url 'administrator:AddStudent' %}"
-  method="post" enctype="multipart/form-data">
-  {% csrf_token %}
-  <div class="col-md-4">
-    <label for="inputName" class="form-label">Student Name</label>
-    <input type="text" name="name" class="form-control" id="inputName" required>
-  </div>
+<div class="container">
+<ul class="nav nav-tabs " id="myTab" role="tablist">
+  <li class="nav-item" role="presentation">
+    <button class="nav-link active" id="pending-tab" data-bs-toggle="tab" data-bs-target="#single" type="button" role="tab" aria-controls="home" aria-selected="true"><p class="h6">Add single</p></button>
+  </li>
+  <li class="nav-item" role="presentation">
+    <button class="nav-link" id="Inprocess-tab" data-bs-toggle="tab" data-bs-target="#bulk" type="button" role="tab" aria-controls="profile" aria-selected="false"><p class="h6">Bulk add</p></button>
+  </li>
 
-  <div class="col-md-4">
-    <label for="inputEmail" class="form-label">Email Address</label>
-    <input type="text" name="studemail" class="form-control" id="inputEmail" required>
-  </div>
-  <div class="col-md-4">
-    <label for="phone" class="form-label">Phone Number</label>
-    <input type="tel" class="form-control" id="phone" name="phone_no" placeholder="03*******20" required>
-  </div>
-  <div class="col-md-4">
-    <label for="address" class="form-label">Address</label>
-                <textarea class="form-control" id="address" name="address" rows="3" required></textarea>
-  </div>
+</ul>
 
-  <div class="col-md-8">
-    <label for="guardian" class="form-label">Guardian or Parent Name</label>
-    <input type="text" class="form-control" id="guardian" name="gardian_or_parent_name" required>
-  </div>
-
-  <div class="row g-3">
-
-    <div class="col-md-4">
-        <label for="gender" class="form-label">Gender</label>
-    <select class="form-select" id="gender" name="gender" required>
-        <option value="Male">Male</option>
-        <option value="Female">Female</option>
-        <option value="Other">Other</option>
-    </select>
-        <label for="dob" class="form-label">Date of Birth</label>
-                <input type="date" class="form-control" id="dob" name="date_of_birth" required>
-                <label for="enrollment" class="form-label">Date of Enrollment</label>
-                <input type="date" class="form-control" id="enrollment" name="date_of_enrollment" required>
-                <label for="classSelect" class="form-label">Select Class</label>
-                <select class="form-select" id="classSelect" name="class" required>
-                    <option value="">Select a class</option>
-                    {% for class in onl_classes %}
-                    <option value="{{class}}">{{class}}</option>
-                    {% endfor %}
-                    <!-- Add other class options here -->
+<div class="tab-content" id="myTabContent">
+  <div class="tab-pane fade show active" id="single" role="tabpanel" aria-labelledby="single"><form class="row g-3" style="width: 80%  ;margin: 100px 10%; " 
+    {% if update.Update == "True" %}
+    action="{% url 'administrator:AddStudent' %}"
+    {% elif update.Update == "False" %}
+    action="{% url 'administrator:UpdateStudent' student.id %}"
+    {% endif %}
+      method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+      <div class="col-md-4">
+        <label for="inputName" class="form-label">Student Name</label>
+        <input type="text" name="name" class="form-control" id="inputName" required value="{{student.name}}">
+      </div>
+    
+      <div class="col-md-4">
+        <label for="inputEmail" class="form-label">Email Address</label>
+        <input type="text" name="studemail" class="form-control" id="inputEmail" required value="{{student.email_address}}">
+      </div>
+      <div class="col-md-4">
+        <label for="phone" class="form-label">Phone Number</label>
+        <input type="tel" class="form-control" id="phone" name="phone_no" placeholder="03*******20" required value="{{student.phone_no}}">
+      </div>
+      <div class="col-md-4">
+        <label for="address" class="form-label">Address</label>
+                    <textarea class="form-control" id="address" name="address" rows="3" required >{{student.address}}</textarea>
+      </div>
+    
+      <div class="col-md-8">
+        <label for="guardian" class="form-label">Guardian or Parent Name</label>
+        <input type="text" class="form-control" id="guardian" name="gardian_or_parent_name" required value="{{student.gardian_or_parent_name}}">
+    
+      </div>
+    
+      <div class="row g-3">
+    
+        <div class="col-md-4">
+            <label for="gender" class="form-label">Gender</label>
+        <select class="form-select" id="gender" name="gender" required>
+            <option value="Male" {% if student.gender == "Male" %}selected{% endif %}>Male</option>
+            <option value="Female" {% if student.gender == "Female" %}selected{% endif %}>Female</option>
+            <option value="Other" {% if student.gender == "Other" %}selected{% endif %}>Other</option>
+        </select>
+            <label for="dob" class="form-label">Date of Birth</label>
+                    <input type="date" class="form-control" id="dob" name="date_of_birth" required value="{{student.date_of_birth|date:'Y-m-d'}}">
+                    <label for="enrollment" class="form-label">Date of Enrollment</label>
+                    <input type="date" class="form-control" id="enrollment" name="date_of_enrollment" required value="{{student.date_of_enrollment|date:'Y-m-d'}}">
+                    <label for="classSelect" class="form-label">Select Class</label>
+                    <select class="form-select" id="classSelect" name="class" required>
+                        <option value="">Select a class</option>
+                        {% for i in onl_classes %}
+                        <option value="{{i}}">{{i}}</option>
+                        {% endfor %}
+                        <!-- Add other class options here -->
+                    </select>
+                    <label for="sectionSelect" class="form-label">Select Section</label>
+                <select class="form-select" id="sectionSelect" name="section" required disabled>
+                    <option value="">Select a section</option>
                 </select>
-                <label for="sectionSelect" class="form-label">Select Section</label>
-            <select class="form-select" id="sectionSelect" name="section" required disabled>
-                <option value="">Select a section</option>
-            </select>
+                </div>
+                     
+        </div>
+        <div class="col-12">
+          <button type="submit" class="btn btn-primary" style="width: 70px;" name="add">Add</button>
+
+
+        </div>
+      </div>
+    
+    
+      
+    </form></div>
+</div>
+<div class="tab-content" id="myTabContent">
+  <div class="tab-pane fade show active" id="bulk" role="tabpanel" aria-labelledby="single">
+    <div class="container mt-5">
+      <form method="post" action="{% url 'administrator:BulkAddStd' %}" enctype="multipart/form-data">
+          {% csrf_token %}
+          <div class="mb-3">
+              <label for="csv_file" class="form-label">Select CSV File</label>
+              <input type="file" class="form-control" id="csv_file" name="csv_file" accept=".csv" required>
+          </div>
+          <button type="submit" class="btn btn-primary" name="upcsv">Upload CSV</button>
+          <a  class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#sample">Show sample</a>
+      </form>
+      <div class="modal fade" id="sample"  data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-xl">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="staticBackdropLabel">Sample</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            
-    </div>
+            <div class="modal-body">
+              <p >Here is a sample format of CSV file to upload </p>
+              <table class="table table-bordered table-sm ms-auto mx-auto"  id="students" style="width: 100px;">
+                <thead>
+                   <tr>
+                     <th >name</th>
+                     <th >email</th>
+                     <th>address</th>
+                     <th >phone_no</th>
+                     <th >gardian_or_parent</th>
+                     <th >gender</th>
+                     <th >date_of_birth</th>
+                     <th >date_of_enrollment</th>
+                     <th>class</th>
+                     
+                     <th>section</th>
+                   </tr>
+                 </thead>
+                 <tbody>
+                  <tr>
+                    <td>
+                      John
+                    </td>
+                    <td>
+                      Jhon@gmail.com
+                    </td>
+                    <td>
+                      123 street, abc city
+                    </td>
+                    <td>
+                      123456
+                    </td>
+                    <td>
+                      Doe
+                    </td>
+                    <td>
+                      Male/Female/Others
+                    </td>
+                    <td>
+                      18/09/2001
+                    </td>
+                    <td>
+                      18/08/2023
+                    </td>
+                    <td>
+                      1st/2nd year engineering
+                    </td>
+                    <td>
+                      A/B
+                    </td>
+                  </tr>
+                  </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-primary"><a href="{% url 'administrator:DownloadSample' %}" class="text-white text-decoration-none">Download CSV</a></button>
+            </div>
+          </div>
+        </div>
+      </div>
   </div>
-
-
-  <div class="col-12">
-    <button type="submit" class="btn btn-primary">Add</button>
   </div>
-</form>
+</div>
+
+</div>
 
 
 
@@ -76,6 +183,9 @@ Add Student
     const classSelect = document.getElementById('classSelect');
     const sectionSelect = document.getElementById('sectionSelect');
     const sectionsByClass = JSON.parse('{{ classes|safe }}');
+    const update = JSON.parse('{{ update|safe }}')
+
+
     
 
 
@@ -84,8 +194,15 @@ Add Student
     //     '2nd year engineering': ['A', 'B', 'C'],
     //     // Add other class-section mappings here
     // };
-
-    classSelect.addEventListener('change', () => {
+    if(update["Update"] == true){
+      const clas_data = JSON.parse('{{ class|safe }}')
+      classSelect.value = clas_data["class"]
+      class_change()
+      sectionSelect.value = clas_data["section"]
+    }
+    classSelect.addEventListener('change', class_change );
+    function class_change(){
+      {
         const selectedClass = classSelect.value;
         const sections = sectionsByClass[String(selectedClass)];
 
@@ -107,7 +224,8 @@ Add Student
             // Disable section dropdown if no sections available
             sectionSelect.disabled = true;
         }
-    });
+    }
+    }
 </script>
 
 
