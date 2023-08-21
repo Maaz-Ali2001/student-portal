@@ -1,18 +1,7 @@
 venv/
 .idea/
-<<<<<<< Updated upstream
 administrator/__pycache__/
 administrator/migrations/
 studentportal/__pycache__/
 db.sqlite3
-=======
-studentportal/administrator/__pycache__/
-studentportal/administrator/migrations/__pycache__/
-db.sqlite3
-venv/
-.idea/
-administrator/__pycache__/
-administrator/migrations/
-studentportal/__pycache__/
-db.sqlite3
->>>>>>> Stashed changes
+
