@@ -17,3 +17,4 @@ urlpatterns = [
     path("BulkAddStd/",views.BulkAddStd,name="BulkAddStd"),
      path("DownloadSample/",views.download_csv,name="DownloadSample")
 ]
+

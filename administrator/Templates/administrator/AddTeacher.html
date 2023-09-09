@@ -12,8 +12,7 @@ Add Teacher
 <form class="row g-3" style="width: 80%  ;margin: 100px 10%; " action="{% url 'administrator:UpdateTeacher' teacherId %}"
   method="post" >
 {% else %}
-<form class="row g-3" style="width: 80%  ;margin: 100px 10%; " action="{% url 'administrator:AddTeacher' %}"
-  method="post" >
+<form class="row g-3" style="width: 80%  ;margin: 100px 10%; " action="{% url 'administrator:AddTeacher' %}" method="post" >
   {% endif %}
   {% csrf_token %}
   <div class="col-md-4">

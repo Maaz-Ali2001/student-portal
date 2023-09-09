@@ -1,0 +1,55 @@
+{% extends 'Teacher/baseTeacher.html' %}
+
+    {% block title %}
+    Home
+{% endblock %}
+
+{% block content %}
+<button type="button" class="btn btn-dark" style="margin-left:6%; margin-top: 50px;" onclick="window.location.href='{% url 'teacher:attendance_tree' class_name subject section %}'">Back</button>
+<h1 style="text-align: center; margin-bottom: 50px;">New Quiz</h1>
+{% if  quiz %}
+<form action="{% url 'teacher:update_quiz' class_name subject section quiz.id %}" method="post" >
+{% else %}
+<form action="{% url 'teacher:add_quiz' class_name subject section %}" method="post" >
+{% endif %}
+{% csrf_token %}
+<div class="row g-3 ms-auto mx-auto" style="width: 70%;">
+    <div class="col-md-6">
+        <label for="name" class="form-label">Quiz Name</label>
+        <input type="text" name="name" value="{{quiz.name}}" class="form-control" id="name" required>
+    </div>
+
+    <div class="col-md-6">
+        <label for="date" class="form-label">Date</label>
+        <input type="datetime-local" value="{{ quiz.date_time|date:'Y-m-d\TH:i' }}" name="date" class="form-control" id="date" required>
+    </div>
+</div>
+
+<table class="table ms-auto mx-auto p-0" style="width: 70%; margin-top: 100px;table-layout: fixed;" >
+    <colgroup>
+        <col style="width: 60%;">
+        <col style="width: 40%;">
+    </colgroup>
+    <thead>
+    <tr>
+        <th scope="col">Student Name</th>
+        <th scope="col">Marks</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for student in students %}
+    <tr>
+        <td>{{ student.name }}</td>
+        <td><input name="{{student.id}}" value="{{student.marks}}" type="number"></td>
+    {% endfor %}
+    </tbody>
+</table> 
+{% if quiz %}
+<button type="submit" class="btn btn-primary btn-lg" style="margin-left:6% ;">Update</button>
+{% else %}
+<button type="submit" class="btn btn-primary btn-lg" style="margin-left:6% ;">Add</button>
+{% endif %}
+</form>
+
+
+{% endblock %}
