@@ -5,6 +5,7 @@ from django.db.models import Count
 import json
 import pandas as pd
 import datetime
+from django.contrib import messages
 
 def Teachers(request):
     unique_teachers = Teacher.objects.values('id','teacher_id', 'name')
@@ -211,23 +212,33 @@ def DeleteStudent(request,stud_id):
 
 def BulkAddStd(request):
     if request.method == 'POST':
-        csv_file = request.FILES['csv_file']
-        df = pd.read_csv(csv_file)
-        for index, row in df.iterrows():
-                student = Student(
-                name = row['name'],email_address = row['email'],phone_no = row['phone_no'],
-                address = row['address'],gardian_or_parent_name = row['gardian_or_parent'],
-                gender = row['gender'], date_of_birth = datetime.datetime.strptime(str(row['date_of_birth']),"%d/%m/%Y").strftime("%Y-%m-%d"), 
-                date_of_enrollment = datetime.datetime.strptime(str(row['date_of_enrollment']),"%d/%m/%Y").strftime("%Y-%m-%d")
-                )
-                student.save()
-                classes = Class.objects.filter(name = row['class'],section = row['section'])
-                for i in classes:
-                    stud_class = Student_Class(class_id = i,student_id = student)
-                    stud_class.save()
-
-
-        return redirect('administrator:Students')
+        try:
+            csv_file = request.FILES['csv_file']
+            df = pd.read_csv(csv_file)
+            dis_clasess = Class.objects.values_list("name",flat=True).distinct()
+            dis_sections = Class.objects.values_list("section",flat=True).distinct()
+            for index, row in df.iterrows():
+                    print(row['class'],row['section'])
+                    if (row["class"] in dis_clasess) or (row["section"] in dis_sections):
+                        student = Student(
+                        name = row['name'],email_address = row['email'],phone_no = row['phone_no'],
+                        address = row['address'],gardian_or_parent_name = row['gardian_or_parent'],
+                        gender = row['gender'], date_of_birth = datetime.datetime.strptime(str(row['date_of_birth']),"%d/%m/%Y").strftime("%Y-%m-%d"), 
+                        date_of_enrollment = datetime.datetime.strptime(str(row['date_of_enrollment']),"%d/%m/%Y").strftime("%Y-%m-%d")
+                        )
+                        student.save()
+                        classes = Class.objects.filter(name = row['class'],section = row['section'])
+                        for i in classes:
+                            stud_class = Student_Class(class_id = i,student_id = student)
+                            stud_class.save()
+                    else:
+                        messages.warning(request,"One of the records contains class or section that is not available")
+                        return redirect('administrator:AddStudent')
+            messages.success(request,"Students added successfully")
+            return redirect('administrator:Students')
+        except:
+            messages.error(request,"Failed to add students")
+            return redirect('administrator:AddStudent')
     return redirect('administrator:Students')
 
 def download_csv(request):

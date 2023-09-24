@@ -8,7 +8,7 @@
 
 {% block content %}
 <h1 style="text-align: center; ; margin: 50px 50px;">Students</h1> 
-
+{% include 'messages.html' %}
 <button type="button" class="btn btn-primary btn-lg" style="margin-left:6% ;"><a href="{% url 'administrator:AddStudent' %}" class="text-white text-decoration-none">Add Student</a></button>
 <div class="container-fluid pt-3" style="width: 90%;">
 <table class="table table-bordered ms-auto mx-auto" id="students">

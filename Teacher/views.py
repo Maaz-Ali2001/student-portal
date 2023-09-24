@@ -2,7 +2,7 @@ from django.shortcuts import render,HttpResponse, redirect
 from administrator.models import Teacher,Teacher_Class,Class,Student_Class,Student
 from .models import *
 from .decorators import *
-
+from django.contrib import messages
 
 
 def login(request):
